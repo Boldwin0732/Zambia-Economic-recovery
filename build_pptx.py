@@ -18,7 +18,14 @@ YEARS      = ['2015','2016','2017','2018','2019','2020','2021','2022','2023','20
 EXT_DEBT   = [12.3, 14.0, 17.5, 22.4, 29.1, 31.5, 29.8, 26.4, 22.7, 18.9]  # $B
 CURR_ACCT  = [-3.6, -4.1, -1.9, -1.7, -1.5, 2.9, 11.9, 4.7, 3.1, 2.0]      # % GDP
 GDP_GROWTH = [2.9, 3.8, 3.5, 4.0, 1.4, -2.8, 4.6, 4.7, 4.7, 5.3]           # % annual
-FDI        = [3.2, 2.5, 3.5, 2.8, 2.4, 1.8, 3.7, 5.1, 6.8, 9.32]           # % GDP
+FDI        = [3.1, 2.4, 4.2, 1.7, 2.5, 1.9, 3.6, 4.9, 6.8, 9.32]           # % GDP (World Bank WDI)
+
+
+WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+
+def add_white_bg(slide, left, top, width, height):
+    """White rectangle placed BEFORE a chart so it acts as the chart background."""
+    add_rect(slide, left, top, width, height, WHITE)
 
 
 def add_column_chart(slide, left, top, width, height, categories, values,
@@ -157,17 +164,16 @@ def add_divider_line(slide, left, top, width, color=None):
 
 def stat_card(slide, left, top, width, height, metric, value, sub, val_color=None):
     add_rect(slide, left, top, width, height, DIVIDER)
-    cx = left + width / 2
-    add_textbox(slide, left + Inches(0.1), top + Inches(0.12),
-                width - Inches(0.2), Inches(0.4),
-                metric, 9, color=MID_TEXT, align=PP_ALIGN.CENTER)
-    add_textbox(slide, left + Inches(0.05), top + Inches(0.48),
-                width - Inches(0.1), Inches(0.55),
-                value, 22, bold=True,
+    add_textbox(slide, left + Inches(0.1), top + Inches(0.1),
+                width - Inches(0.2), Inches(0.45),
+                metric, 14, color=MID_TEXT, align=PP_ALIGN.CENTER)
+    add_textbox(slide, left + Inches(0.05), top + Inches(0.52),
+                width - Inches(0.1), Inches(0.58),
+                value, 24, bold=True,
                 color=val_color if val_color else ACCENT, align=PP_ALIGN.CENTER)
-    add_textbox(slide, left + Inches(0.1), top + Inches(1.0),
-                width - Inches(0.2), Inches(0.4),
-                sub, 8, color=MID_TEXT, align=PP_ALIGN.CENTER)
+    add_textbox(slide, left + Inches(0.1), top + Inches(1.08),
+                width - Inches(0.2), Inches(0.42),
+                sub, 12, color=MID_TEXT, align=PP_ALIGN.CENTER)
 
 
 # ── Presentation setup ────────────────────────────────────────────────────────
@@ -266,6 +272,7 @@ add_multiline(s2, Inches(0.5), Inches(2.0), Inches(6.0), Inches(3.0),
 # External Debt bar chart (replaces text timeline boxes)
 add_textbox(s2, Inches(7.2), Inches(1.65), Inches(5.7), Inches(0.3),
             "EXTERNAL DEBT  ($ billions)  ·  2015–2024", 8, bold=True, color=MID_TEXT)
+add_white_bg(s2, Inches(7.2), Inches(1.95), Inches(5.85), Inches(3.1))
 add_column_chart(s2, Inches(7.2), Inches(1.95), Inches(5.85), Inches(3.1),
                  YEARS, EXT_DEBT, series_color=ACCENT,
                  point_colors={4: RED_WARN, 5: RED_WARN})
@@ -332,11 +339,15 @@ for i, (m, v, s, vc) in enumerate(cards):
               card_left + i * (card_w + card_gap),
               card_top, card_w, card_h, m, v, s, vc)
 
-# Current Account line chart (replaces copper annotation box)
+# Current Account column chart — matches PBI clusteredColumnChart on "Copper Triggered the Recovery"
 add_textbox(s3, Inches(7.3), Inches(3.65), Inches(5.85), Inches(0.3),
             "CURRENT ACCOUNT BALANCE  (% of GDP)  ·  2015–2024", 8, bold=True, color=MID_TEXT)
-add_line_chart(s3, Inches(7.3), Inches(3.95), Inches(5.85), Inches(2.75),
-               YEARS, CURR_ACCT, series_color=ACCENT2)
+add_white_bg(s3, Inches(7.3), Inches(3.95), Inches(5.85), Inches(2.75))
+add_column_chart(s3, Inches(7.3), Inches(3.95), Inches(5.85), Inches(2.75),
+                 YEARS, CURR_ACCT, series_color=ACCENT2,
+                 point_colors={0: RED_WARN, 1: RED_WARN, 2: RED_WARN,
+                                3: RED_WARN, 4: RED_WARN,
+                                6: ACCENT2, 7: ACCENT2, 8: ACCENT2, 9: ACCENT2})
 
 add_textbox(s3, Inches(12.5), Inches(6.9), Inches(0.7), Inches(0.4),
             "03", 9, color=MID_TEXT, align=PP_ALIGN.RIGHT)
@@ -463,26 +474,46 @@ add_rect(s6c, Inches(0.12), Inches(0), SLIDE_W - Inches(0.12), Inches(0.06), DIV
 
 add_textbox(s6c, Inches(0.5), Inches(0.25), Inches(9), Inches(0.4),
             "DATA EVIDENCE  ·  CHARTS", 9, color=ACCENT, bold=True)
-add_multiline(s6c, Inches(0.5), Inches(0.65), Inches(12.5), Inches(0.9),
+add_multiline(s6c, Inches(0.5), Inches(0.65), Inches(12.5), Inches(0.8),
               [("GDP Growth & FDI Inflows: The Recovery Visualised", True, LIGHT_TEXT)],
-              font_size=24)
-add_divider_line(s6c, Inches(0.5), Inches(1.55), Inches(12.5))
+              font_size=22)
+add_divider_line(s6c, Inches(0.5), Inches(1.48), Inches(12.5))
+
+# Explanatory intro sentence
+add_textbox(s6c, Inches(0.5), Inches(1.58), Inches(12.3), Inches(0.42),
+            "GDP contracted sharply in 2020 but rebounded within a year — and sustained 5 %+ growth "
+            "even as copper prices cooled post-2021. FDI hit its lowest point at the 2020 default, "
+            "then climbed to a decade-high 9.32 % in 2024 — the year bilateral restructuring "
+            "agreements were fully implemented, confirming restored investor confidence.",
+            9, color=MID_TEXT)
 
 # GDP Growth chart (left half)
-add_textbox(s6c, Inches(0.5), Inches(1.7), Inches(6.2), Inches(0.3),
-            "GDP GROWTH  (% annual)  ·  2015–2024  ·  Red = contraction", 8, bold=True, color=MID_TEXT)
-add_column_chart(s6c, Inches(0.5), Inches(2.0), Inches(6.2), Inches(4.7),
+add_textbox(s6c, Inches(0.5), Inches(2.08), Inches(6.2), Inches(0.28),
+            "GDP GROWTH  (% annual)  ·  2015–2024  ·  Red = contraction  |  Green = recovery",
+            8, bold=True, color=MID_TEXT)
+add_white_bg(s6c, Inches(0.5), Inches(2.38), Inches(6.2), Inches(3.8))
+add_column_chart(s6c, Inches(0.5), Inches(2.38), Inches(6.2), Inches(3.8),
                  YEARS, GDP_GROWTH, series_color=ACCENT,
-                 point_colors={4: RGBColor(0xFF,0xA5,0x00),
+                 point_colors={4: RGBColor(0xFF, 0xA5, 0x00),
                                 5: RED_WARN,
                                 6: ACCENT2, 7: ACCENT2, 8: ACCENT2, 9: ACCENT2})
+add_textbox(s6c, Inches(0.5), Inches(6.2), Inches(6.2), Inches(0.32),
+            "GDP fell -2.8 % in 2020 (COVID + default) before recovering to 4.6 % in 2021 "
+            "and holding at 5.3 % in 2024 despite softer copper prices.",
+            8, color=MID_TEXT, italic=True)
 
 # FDI chart (right half)
-add_textbox(s6c, Inches(7.0), Inches(1.7), Inches(6.0), Inches(0.3),
-            "FDI NET INFLOWS  (% of GDP)  ·  2015–2024  ·  Green = decade-high", 8, bold=True, color=MID_TEXT)
-add_column_chart(s6c, Inches(7.0), Inches(2.0), Inches(6.0), Inches(4.7),
+add_textbox(s6c, Inches(7.0), Inches(2.08), Inches(6.0), Inches(0.28),
+            "FDI NET INFLOWS  (% of GDP)  ·  2015–2024  ·  Red = decade-low  |  Green = decade-high",
+            8, bold=True, color=MID_TEXT)
+add_white_bg(s6c, Inches(7.0), Inches(2.38), Inches(6.0), Inches(3.8))
+add_column_chart(s6c, Inches(7.0), Inches(2.38), Inches(6.0), Inches(3.8),
                  YEARS, FDI, series_color=ACCENT,
                  point_colors={5: RED_WARN, 9: ACCENT2})
+add_textbox(s6c, Inches(7.0), Inches(6.2), Inches(6.0), Inches(0.32),
+            "FDI bottomed at 1.9 % in 2020 then surged to 9.32 % in 2024 — "
+            "the year G20 bilateral restructuring agreements were implemented.",
+            8, color=MID_TEXT, italic=True)
 
 add_textbox(s6c, Inches(0.5), Inches(6.82), Inches(12), Inches(0.4),
             "Sources: World Bank WDI · IMF WEO · Bank of Zambia · Ministry of Finance — Report on the Economy 2025",
