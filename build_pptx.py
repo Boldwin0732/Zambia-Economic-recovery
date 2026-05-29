@@ -336,7 +336,7 @@ add_textbox(s4, Inches(7.3), Inches(1.8), Inches(5.8), Inches(0.35),
 
 rows = [
     ("PPG Debt Service / Exports", "12.5 %", "3.0 %"),
-    ("GDP Growth", "1.4 %  (2020)", "5.3 %  (2024)"),
+    ("GDP Growth", "-2.8 %  (2020)", "5.3 %  (2024)"),
     ("FDI Inflows (% GDP)", "1.8 %  (2020)", "9.32 %  (2024)"),
     ("Investor Confidence", "Eurobond default", "Decade-high FDI"),
 ]
